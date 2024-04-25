@@ -25,7 +25,7 @@ class LoggingMiddleware implements http.Client {
 
       // Log GET response details
       String responseLog =
-          '✅ 🌐 GET Response 🌐 ✅\n🔗 URL: $url\n🔒 Status Code: ${response.statusCode}\n📋 Headers:\n${response.headers.entries.map((entry) => '  • ${entry.key}: ${entry.value}').join('\n')}\n📥 Response Data: ${response.body}';
+          '✅ 🌐 GET Response 🌐 ✅\n🔗 URL: $url\n🔒 Status Code: ${response.statusCode}\n📋 Headers:\n${response.headers.entries.map((entry) => '  • ${entry.key}: ${entry.value}').join('\n')}\n📥 Response Data: ${getPrettyJSONString(response.body)}';
       _logger.i(responseLog);
 
       return response;
@@ -63,7 +63,7 @@ class LoggingMiddleware implements http.Client {
         request: request as http.Request,
       ); // Cast to http.Request
 
-      _logger.i('📥 Response Data: ${response.body}');
+      _logger.i('📥 Response Data: ${getPrettyJSONString(response.body)}');
 
       return streamedResponse;
     } catch (error) {
@@ -95,7 +95,7 @@ class LoggingMiddleware implements http.Client {
       String responseData =
           '\n🔗 URL: $url\n🔒 Status Code: ${response.statusCode}\n📋 Headers: ${jsonEncode(response.headers)}';
       _logger.i(
-          '✅ 🌐 Delete Response 🌐 ✅$responseData\n📥 Response Data: ${response.body}');
+          '✅ 🌐 Delete Response 🌐 ✅$responseData\n📥 Response Data: ${getPrettyJSONString(response.body)}');
       return response;
     } catch (error) {
       // Log delete error
@@ -125,7 +125,7 @@ class LoggingMiddleware implements http.Client {
       String responseData =
           '\n🔗 URL: $url\n🔒 Status Code: ${response.statusCode}\n📋 Headers: ${jsonEncode(response.headers)}';
       _logger.i(
-          '✅ 🌐 Post Response 🌐 ✅$responseData\n📥 Response Data: ${response.body}');
+          '✅ 🌐 Post Response 🌐 ✅$responseData\n📥 Response Data: ${getPrettyJSONString(response.body)}');
 
       return response;
     } catch (error) {
@@ -134,7 +134,11 @@ class LoggingMiddleware implements http.Client {
       rethrow; // Rethrow the error after logging
     }
   }
-
+  String getPrettyJSONString(jsonObject){
+    var spaces = ' ' * 4;
+    var encoder = JsonEncoder.withIndent(spaces);
+    return encoder.convert(json);
+  }
   @override
   Future<http.Response> patch(Uri url,
       {Map<String, String>? headers, Object? body, Encoding? encoding}) async {
@@ -156,7 +160,7 @@ class LoggingMiddleware implements http.Client {
       String responseData =
           '\n🔗 URL: $url\n🔒 Status Code: ${response.statusCode}\n📋 Headers: ${jsonEncode(response.headers)}';
       _logger.i(
-          '✅ 🌐 Patch Response 🌐 ✅$responseData\n📥 Response Data: ${response.body}');
+          '✅ 🌐 Patch Response 🌐 ✅$responseData\n📥 Response Data: ${getPrettyJSONString(response.body)}');
 
       return response;
     } catch (error) {
@@ -187,7 +191,7 @@ class LoggingMiddleware implements http.Client {
       String responseData =
           '\n🔗 URL: $url\n🔒 Status Code: ${response.statusCode}\n📋 Headers: ${jsonEncode(response.headers)}';
       _logger.i(
-          '✅ 🌐 Put Response 🌐 ✅$responseData\n📥 Response Data: ${response.body}');
+          '✅ 🌐 Put Response 🌐 ✅$responseData\n📥 Response Data: ${getPrettyJSONString(response.body)}');
 
       return response;
     } catch (error) {
@@ -236,7 +240,7 @@ class LoggingMiddleware implements http.Client {
 
       // Log read response details
       _logger.i(
-          '✅ 🌐 Read Response 🌐 ✅\n🔗 URL: $url\n📥 Response Data: ${response.body}');
+          '✅ 🌐 Read Response 🌐 ✅\n🔗 URL: $url\n📥 Response Data: ${getPrettyJSONString(response.body)}');
 
       return response.body;
     } catch (error) {
